@@ -27917,18 +27917,39 @@ module.exports.default = axios;
 
 },{"./utils":"..\\..\\node_modules\\axios\\lib\\utils.js","./helpers/bind":"..\\..\\node_modules\\axios\\lib\\helpers\\bind.js","./core/Axios":"..\\..\\node_modules\\axios\\lib\\core\\Axios.js","./core/mergeConfig":"..\\..\\node_modules\\axios\\lib\\core\\mergeConfig.js","./defaults":"..\\..\\node_modules\\axios\\lib\\defaults\\index.js","./cancel/CanceledError":"..\\..\\node_modules\\axios\\lib\\cancel\\CanceledError.js","./cancel/CancelToken":"..\\..\\node_modules\\axios\\lib\\cancel\\CancelToken.js","./cancel/isCancel":"..\\..\\node_modules\\axios\\lib\\cancel\\isCancel.js","./env/data":"..\\..\\node_modules\\axios\\lib\\env\\data.js","./helpers/toFormData":"..\\..\\node_modules\\axios\\lib\\helpers\\toFormData.js","../lib/core/AxiosError":"..\\..\\node_modules\\axios\\lib\\core\\AxiosError.js","./helpers/spread":"..\\..\\node_modules\\axios\\lib\\helpers\\spread.js","./helpers/isAxiosError":"..\\..\\node_modules\\axios\\lib\\helpers\\isAxiosError.js"}],"..\\..\\node_modules\\axios\\index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"..\\..\\node_modules\\axios\\lib\\axios.js"}],"login.js":[function(require,module,exports) {
+},{"./lib/axios":"..\\..\\node_modules\\axios\\lib\\axios.js"}],"alerts.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.login = undefined;
+/* eslint-disable */
+var hideAlert = exports.hideAlert = function hideAlert() {
+  var el = document.querySelector('.alert');
+  if (el) el.parentElement.removeChild(el);
+};
+
+var showAlert = exports.showAlert = function showAlert(type, msg) {
+  hideAlert();
+
+  var markup = '<div class="alert alert--' + type + '">' + msg + '</div>';
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+  window.setTimeout(hideAlert, 5000);
+};
+},{}],"login.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.logout = exports.login = undefined;
 var _this = undefined;
 
 var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
+
+var _alerts = require('./alerts');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27959,7 +27980,7 @@ var login = exports.login = function () {
 
 
             if (res.data.status === 'success') {
-              alert('Logged in successfully!');
+              (0, _alerts.showAlert)('success', 'Logged in successfully!');
               window.setTimeout(function () {
                 location.assign('/');
               }, 1500);
@@ -27973,7 +27994,7 @@ var login = exports.login = function () {
             _context.prev = 9;
             _context.t0 = _context['catch'](1);
 
-            alert(_context.t0.response.data.message);
+            (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
           case 12:
           case 'end':
@@ -27987,7 +28008,48 @@ var login = exports.login = function () {
     return _ref.apply(this, arguments);
   };
 }();
-},{"axios":"..\\..\\node_modules\\axios\\index.js"}],"index.js":[function(require,module,exports) {
+
+var logout = exports.logout = function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var res;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.next = 3;
+            return (0, _axios2.default)({
+              method: 'GET',
+              url: 'http://localhost:3000/api/v1/users/logout'
+            });
+
+          case 3:
+            res = _context2.sent;
+
+
+            if (res.data.status = 'success') location.reload(true);
+            _context2.next = 10;
+            break;
+
+          case 7:
+            _context2.prev = 7;
+            _context2.t0 = _context2['catch'](0);
+
+            (0, _alerts.showAlert)('error', 'Error logging out, try again!');
+
+          case 10:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, _this, [[0, 7]]);
+  }));
+
+  return function logout() {
+    return _ref2.apply(this, arguments);
+  };
+}();
+},{"axios":"..\\..\\node_modules\\axios\\index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 'use strict';
 
 require('@babel/polyfill');
@@ -28000,6 +28062,7 @@ var _login = require('./login');
 var mapBox = document.getElementById('map'); /* eslint-disable */
 
 var loginForm = document.querySelector('.form');
+var logOutBtn = document.querySelector('.nav__el--logout');
 
 // DELEGATION
 if (mapBox) {
@@ -28014,6 +28077,8 @@ if (loginForm) document.querySelector('.btn').addEventListener('click', function
 
   (0, _login.login)(email, password);
 });
+
+if (logOutBtn) logOutBtn.addEventListener('click', _login.logout);
 },{"@babel/polyfill":"..\\..\\node_modules\\@babel\\polyfill\\lib\\index.js","./mapbox":"mapbox.js","./login":"login.js"}],"..\\..\\node_modules\\parcel-bundler\\src\\builtins\\hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -28043,7 +28108,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59987' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '56639' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
